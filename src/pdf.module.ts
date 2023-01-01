@@ -1,8 +1,9 @@
 import { HandlebarsModule } from "@gboutte/nestjs-hbs";
-import { DynamicModule, Module } from "@nestjs/common";
+import { DynamicModule, Global, Module } from "@nestjs/common";
 import { PdfParameters } from "./pdf-parameters.interface";
 import { PdfService } from "./pdf.service";
 
+@Global()
 @Module({
   imports: [],
   providers: [PdfService],

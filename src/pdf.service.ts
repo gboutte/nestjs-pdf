@@ -2,13 +2,13 @@ import { HandlebarsService } from "@gboutte/nestjs-hbs";
 import { Inject, Injectable } from "@nestjs/common";
 
 import * as puppeteer from "puppeteer";
-import { PdfOptions } from "./pdf-parameters.interface";
+import { PdfParameters } from "./pdf-parameters.interface";
 
 @Injectable()
 export class PdfService {
   constructor(
     private readonly hbsService: HandlebarsService,
-    @Inject("PDF_PARAMETERS") private options: PdfOptions
+    @Inject("PDF_PARAMETERS") private options: PdfParameters
   ) {}
 
   async generatePdfFromHtml(html: string): Promise<Buffer> {
@@ -22,12 +22,12 @@ export class PdfService {
       waitUntil: "domcontentloaded",
     });
     let pdfopt;
-    if (this.options.pdfOption === undefined) {
+    if (this.options.pdfOptions === undefined) {
       pdfopt = {
         format: "A4",
       };
     } else {
-      pdfopt = this.options.pdfOption;
+      pdfopt = this.options.pdfOptions;
     }
     // create a pdf buffer
     const pdfBuffer = await page.pdf(pdfopt);
