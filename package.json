@@ -31,7 +31,7 @@
   "devDependencies": {
     "@nestjs/common": "^9.1.6",
     "@gboutte/nestjs-hbs": "^0.0.3",
-    "@types/node": "^18.11.5",
+    "@types/node": "^16.0.0",
     "puppeteer": "^19.1.2",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
@@ -41,7 +41,7 @@
   "peerDependencies": {
     "@nestjs/common": "^9.1.6",
     "@gboutte/nestjs-hbs": "^0.0.3",
-    "@types/node": "^18.11.5",
+    "@types/node": "^16.0.0",
     "puppeteer": "^19.1.2",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
