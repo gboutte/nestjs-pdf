@@ -27,20 +27,25 @@
   },
   "author": "Grégory Boutte <gboutte@protonmail.com>",
   "license": "MIT",
-  "dependencies": {
+  "dependencies": {},
+  "devDependencies": {
+    "@nestjs/common": "^9.1.6",
     "@gboutte/nestjs-hbs": "^0.0.3",
     "@types/node": "^18.11.5",
-    "handlebars": "^4.7.7",
     "puppeteer": "^19.1.2",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.5.7",
     "typescript": "^4.8.4"
   },
-  "devDependencies": {
-    "@nestjs/common": "^9.1.6"
-  },
   "peerDependencies": {
-    "@nestjs/common": "^9.1.6"
+    "@nestjs/common": "^9.1.6",
+    "@gboutte/nestjs-hbs": "^0.0.3",
+    "@types/node": "^18.11.5",
+    "puppeteer": "^19.1.2",
+    "reflect-metadata": "^0.1.13",
+    "rimraf": "^3.0.2",
+    "rxjs": "^7.5.7",
+    "typescript": "^4.8.4"
   }
 }
