@@ -92,6 +92,8 @@ export class PdfService {
         }
         // create a pdf buffer
         const pdfBuffer = await page.pdf(pdfopt);
+        await page.close();
+        await browser.close();
         return pdfBuffer;
     }
 
