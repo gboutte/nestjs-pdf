@@ -5,4 +5,5 @@ export interface PdfParameters {
   pdfOptions?: PDFOptions;
   hbsOptions?: HandlebarsOptions;
   chromiumRevision?: string;
+  headless?: boolean|'new';
 }

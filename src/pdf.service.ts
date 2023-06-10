@@ -27,8 +27,13 @@ export class PdfService {
         } else {
             revisionInfo = browserFetcher.revisionInfo(chromiumRevision);
         }
+
+        let headless:boolean|'new' = true;
+        if (this.options.headless !== undefined) {
+            headless = this.options.headless;
+        }
         const browser = await puppeteer.launch({
-            headless: "new",
+            headless: headless,
             executablePath: revisionInfo.executablePath,
         });
 
