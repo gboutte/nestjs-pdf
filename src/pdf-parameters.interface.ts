@@ -4,4 +4,5 @@ import { PDFOptions } from "puppeteer";
 export interface PdfParameters {
   pdfOptions?: PDFOptions;
   hbsOptions?: HandlebarsOptions;
+  chromiumRevision?: string;
 }

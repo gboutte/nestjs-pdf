@@ -32,7 +32,7 @@
     "@nestjs/common": "^9.1.6",
     "@gboutte/nestjs-hbs": "^0.0",
     "@types/node": "^18.0.0",
-    "puppeteer": "^19.1.2",
+    "puppeteer": "^19.7.5",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.5.7",
@@ -42,10 +42,14 @@
     "@nestjs/common": "^9.1.6",
     "@gboutte/nestjs-hbs": "^0.0",
     "@types/node": "^18.0.0",
-    "puppeteer": "^19.1.2",
+    "puppeteer": "^19.7.5",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.5.7",
     "typescript": "^4.8.4"
-  }
+  },
+  "files": [
+    "./src",
+    "./dist"
+  ]
 }
