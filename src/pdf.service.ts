@@ -12,8 +12,14 @@ export class PdfService {
   ) {}
 
   async generatePdfFromHtml(html: string): Promise<Buffer> {
+    let chromiumRevision = '1095492';
+    if (this.options.chromiumRevision !== undefined) {
+      chromiumRevision = this.options.chromiumRevision;
+    }
+    let revisionInfo = await puppeteer.createBrowserFetcher().download(chromiumRevision)
     const browser = await puppeteer.launch({
-      headless: true,
+      headless: "new",
+      executablePath: revisionInfo.executablePath,
     });
 
     const page = await browser.newPage();
