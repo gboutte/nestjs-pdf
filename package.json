@@ -1,7 +1,7 @@
 {
   "name": "@gboutte/nestjs-pdf",
-  "version": "0.0.9",
-  "description": "This package provide a service to render PDF from html string or from handlebars template for nestjs.",
+  "version": "0.0.11",
+  "description": "This package provide a service to render PDF from html string or from handlebars tempaltes for nestjs.",
   "keywords": [
     "nestjs",
     "handlebars",
@@ -30,7 +30,7 @@
   "dependencies": {},
   "devDependencies": {
     "@nestjs/common": "^9.1.6",
-    "@gboutte/nestjs-hbs": "^0.0.7",
+    "@gboutte/nestjs-hbs": "^0.0",
     "@types/node": "^18.0.0",
     "puppeteer": "^19.7.5",
     "reflect-metadata": "^0.1.13",
@@ -40,7 +40,7 @@
   },
   "peerDependencies": {
     "@nestjs/common": "^9.1.6",
-    "@gboutte/nestjs-hbs": "^0.0.8",
+    "@gboutte/nestjs-hbs": "^0.0",
     "@types/node": "^18.0.0",
     "puppeteer": "^19.7.5",
     "reflect-metadata": "^0.1.13",
