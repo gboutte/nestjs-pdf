@@ -41,12 +41,7 @@
   "peerDependencies": {
     "@gboutte/nestjs-hbs": "^0.0",
     "@nestjs/common": "^9.0.0 || ^10.0.0",
-    "@types/node": "^20.5.6",
     "@puppeteer/browsers": "^1.7.0",
-    "puppeteer": "^21.1.0",
-    "reflect-metadata": "^0.1.13",
-    "rimraf": "^5.0.1",
-    "rxjs": "^7.8.1",
-    "typescript": "^5.2.2"
+    "puppeteer": "^21.1.0"
   }
 }
