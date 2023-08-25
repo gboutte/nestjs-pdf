@@ -7,14 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 0.1.0 - 2023-08-25
+### Added
+- Two config parameters have been added:
+  - `browser` (default: `Browser.CHROMIUM`)
+  - `browserTag` (default: `BrowserTag.STABLE`)
+
 ### Changed
 - Updated puppeteer dependancy to `21.0.0`
 - Updated the reamdme to reflect the new config parameters
 
 ### Deprecated
 - The parameter `chromiumRevision` is no longer usefull
-
-### Added
-- Two config parameters have been added:
-  - `browser` (default: `Browser.CHROMIUM`)
-  - `browserTag` (default: `BrowserTag.STABLE`)
