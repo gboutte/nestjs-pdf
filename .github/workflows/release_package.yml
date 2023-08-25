@@ -33,7 +33,6 @@ jobs:
       # Bump package version
       # Use tag latest
       - name: Bump release version
-        working-directory: ./projects/wtfui
         if: startsWith(github.event.inputs.release-type, 'pre') != true
         run: |
           echo "NEW_VERSION=$(npm --no-git-tag-version version $RELEASE_TYPE)" >> $GITHUB_ENV
@@ -44,7 +43,6 @@ jobs:
       # Bump package pre-release version
       # Use tag beta for pre-release versions
       - name: Bump pre-release version
-        working-directory: ./projects/wtfui
         if: startsWith(github.event.inputs.release-type, 'pre')
         run: |
           echo "NEW_VERSION=$(npm --no-git-tag-version --preid=beta version $RELEASE_TYPE
@@ -67,7 +65,7 @@ jobs:
       # Commit changes
       - name: Commit CHANGELOG.md and package.json changes and create tag
         run: |
-          git add "projects/wtfui/package.json"
+          git add "package.json"
           git add "CHANGELOG.md"
           git commit -m "chore: release ${{ env.NEW_VERSION }}"
           git tag ${{ env.NEW_VERSION }}
