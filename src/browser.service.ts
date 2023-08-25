@@ -3,51 +3,38 @@ import {Browser} from "@puppeteer/browsers";
 import {Inject, Injectable, Logger} from "@nestjs/common";
 import * as path from "path";
 import {PdfParameters} from "./pdf-parameters.interface";
-export enum BrowserTag{
+
+export enum BrowserTag {
     LATEST = 'latest',
     BETA = 'beta',
     DEV = 'dev',
     STABLE = 'stable',
     CANARY = 'canary',
 }
+
 @Injectable()
 export class BrowserService {
     private cacheDir: string;
-    constructor( @Inject("PDF_PARAMETERS") private options: PdfParameters) {
+
+    constructor(@Inject("PDF_PARAMETERS") private options: PdfParameters) {
         this.cacheDir = path.resolve(".cache/puppeteer-browser");
     }
 
     async install() {
-        let versionTag:BrowserTag;
-        let browser:Browser;
-
-        if (this.options.browser === undefined) {
-            browser = Browser.CHROMIUM;
-        } else {
-            browser = this.options.browser;
-        }
-        if(this.options.browserTag === undefined){
-            if(browser === Browser.CHROMIUM){
-                versionTag = BrowserTag.LATEST;
-            }else{
-                versionTag = BrowserTag.STABLE;
-            }
-        }else{
-            versionTag = this.options.browserTag;
-        }
-
+        const browser: Browser = this.getBrowser();
+        const versionTag: BrowserTag = this.getBrowserTag()
 
         const browserPlatform = puppeteerBrowser.detectBrowserPlatform();
 
-        const buildId = await puppeteerBrowser.resolveBuildId(browser,browserPlatform, versionTag);
+        const buildId = await puppeteerBrowser.resolveBuildId(browser, browserPlatform, versionTag);
 
-        Logger.log(`Browser ${browser} ${versionTag} build id: ${buildId}`,'NestJsPdf')
+        Logger.log(`Browser ${browser} ${versionTag} build id: ${buildId}`, 'NestJsPdf')
 
-        if(await this.hasBrowserInstalled(browser,buildId)){
-            Logger.log('Browser already installed','NestJsPdf')
+        if (await this.hasBrowserInstalled(browser, buildId)) {
+            Logger.log('Browser already installed', 'NestJsPdf')
             return;
-        }else{
-            Logger.log('Starting browser installation','NestJsPdf')
+        } else {
+            Logger.log('Starting browser installation', 'NestJsPdf')
 
 
             const installOption = {
@@ -56,26 +43,50 @@ export class BrowserService {
                 buildId: buildId,
                 downloadProgressCallback: (downloadedBytes, totalBytes) => {
                     const progress = ((downloadedBytes / totalBytes) * 100).toFixed(2);
-                    Logger.log(`Downloaded ${progress}%`,'NestJsPdf');
+                    Logger.log(`Downloaded ${progress}%`, 'NestJsPdf');
                 }
             };
 
             if (puppeteerBrowser.canDownload(installOption)) {
-                Logger.log(`Installing ${installOption.browser} ${installOption.buildId}`,'NestJsPdf')
+                Logger.log(`Installing ${installOption.browser} ${installOption.buildId}`, 'NestJsPdf')
                 const installedBrowser = await puppeteerBrowser.install(installOption)
-                if(await this.hasBrowserInstalled(browser,buildId)){
-                    Logger.log('Browser installed successfully','NestJsPdf')
-                }else{
-                    Logger.error('Browser installation failed','NestJsPdf')
+                if (await this.hasBrowserInstalled(browser, buildId)) {
+                    Logger.log('Browser installed successfully', 'NestJsPdf')
+                } else {
+                    Logger.error('Browser installation failed', 'NestJsPdf')
                 }
-            }else{
-                Logger.error(`Error, can't install ${installOption.browser} ${installOption.buildId}`,'NestJsPdf')
+            } else {
+                Logger.error(`Error, can't install ${installOption.browser} ${installOption.buildId}`, 'NestJsPdf')
             }
         }
 
     }
 
-    async hasBrowserInstalled(browser,buildId){
+    private getBrowser(): Browser {
+        let browser: Browser;
+        if (this.options.browser === undefined) {
+            browser = Browser.CHROMIUM;
+        } else {
+            browser = this.options.browser;
+        }
+        return browser;
+    }
+
+    private getBrowserTag(): BrowserTag {
+        let versionTag: BrowserTag;
+        if (this.options.browserTag === undefined) {
+            if (this.getBrowser() === Browser.CHROMIUM) {
+                versionTag = BrowserTag.LATEST;
+            } else {
+                versionTag = BrowserTag.STABLE;
+            }
+        } else {
+            versionTag = this.options.browserTag;
+        }
+        return versionTag;
+    }
+
+    async hasBrowserInstalled(browser, buildId) {
         const installedBrowserlist = await puppeteerBrowser.getInstalledBrowsers({
             cacheDir: this.cacheDir
         })
@@ -84,5 +95,19 @@ export class BrowserService {
             return installedBrowser.browser === browser && installedBrowser.buildId === buildId
         });
         return installedBrowser !== undefined;
+    }
+
+    async getExecutablePath(): Promise<string> {
+        const browser: Browser = this.getBrowser();
+        const versionTag: BrowserTag = this.getBrowserTag()
+        const browserPlatform = puppeteerBrowser.detectBrowserPlatform();
+        const buildId = await puppeteerBrowser.resolveBuildId(browser, browserPlatform, versionTag);
+        const installedBrowserlist = await puppeteerBrowser.getInstalledBrowsers({
+            cacheDir: this.cacheDir
+        });
+        const installedBrowser = installedBrowserlist.find((installedBrowser) => {
+            return installedBrowser.browser === browser && installedBrowser.buildId === buildId
+        });
+        return installedBrowser.executablePath;
     }
 }
