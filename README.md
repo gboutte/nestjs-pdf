@@ -19,12 +19,13 @@ npm install @gboutte/nestjs-pdf
 })
 export class AppModule {}
 ```
-|                    | Description                                                                                                                                |
-|--------------------|--------------------------------------------------------------------------------------------------------------------------------------------|
-| `pdfOptions`       | The pdf options can be found on: https://pptr.dev/api/puppeteer.pdfoptions                                                                 |
-| `hbsOptions`       | The handlebars can be found on [@gboutte/nestjs-hbs](https://github.com/gboutte/nestjs-hbs)                                                |                                         |
-| `chromiumRevision` | The chromium revision that will be downloaded and used by puppeteer to generate the pdf. By default it will be `1095492`                   |
-| `headless`         | Define if you want to use chromium headless or not, or the new version. By default it can be `true`. Allowed values: `true`,`false`,`"new"` |
+|                    | Description                                                                                                                                                                                                                                                                                    |
+|--------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `pdfOptions`       | The pdf options can be found on: https://pptr.dev/api/puppeteer.pdfoptions                                                                                                                                                                                                                     |
+| `hbsOptions`       | The handlebars can be found on [@gboutte/nestjs-hbs](https://github.com/gboutte/nestjs-hbs)                                                                                                                                                                                                    |                                         |
+| `browser` | The browser to use for the PDF generation. By default: `Browser.CHROMIUM`. Allowed values `Browser.CHROMIUM`, `Browser.CHROMEHEADLESSSHELL`, `Browser.CHROME`, `Browser.FIREFOX`, `Browser.CHROMEDRIVER` ([Official documentation of Browser](https://pptr.dev/browsers-api/browsers.browser)) |
+| `browserTag` | The version of the browser to use for the PDF generation. By default: `BrowserTag.STABLE`. Allowed values `BrowserTag.STABLE`, `BrowserTag.LATEST`, `BrowserTag.BETA`, `BrowserTag.DEV`, `BrowserTag.CANARY`                                                                                                                                                              |
+| `headless`         | Define if you want to use chromium headless or not, or the new version. By default it's `true`. Allowed values: `true`,`false`,`"new"`                                                                                                                                                         |
 
 
 # Usage
