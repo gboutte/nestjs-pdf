@@ -1,7 +1,9 @@
 import {HandlebarsService} from "@gboutte/nestjs-hbs";
-import {Inject, Injectable} from "@nestjs/common";
+import {Inject, Injectable, Logger} from "@nestjs/common";
 
-import * as puppeteer from "puppeteer";
+import puppeteer from 'puppeteer';
+import * as puppeteerBrowser from '@puppeteer/browsers';
+import {Browser} from '@puppeteer/browsers';
 import {PdfParameters} from "./pdf-parameters.interface";
 
 @Injectable()
@@ -14,19 +16,22 @@ export class PdfService {
 
     async generatePdfFromHtml(html: string): Promise<Buffer> {
 
-        const browserFetcher = puppeteer.createBrowserFetcher();
-        const revisions = browserFetcher.localRevisions();
-
-        let chromiumRevision = '1095492';
+        // const browserFetcher = puppeteer.createBrowserFetcher();
+        // const revisions = browserFetcher.localRevisions();
+        //
+        // let chromiumRevision = '1095492';
         if (this.options.chromiumRevision !== undefined) {
-            chromiumRevision = this.options.chromiumRevision;
+            Logger.warn('Using `chromiumRevision` is no longer supported since the puppeteer update.')
+            // chromiumRevision = this.options.chromiumRevision;
         }
-        let revisionInfo;
-        if (!revisions.includes(chromiumRevision)) {
-            revisionInfo = await browserFetcher.download(chromiumRevision)
-        } else {
-            revisionInfo = browserFetcher.revisionInfo(chromiumRevision);
-        }
+        // let revisionInfo;
+        // if (!revisions.includes(chromiumRevision)) {
+        //     revisionInfo = await browserFetcher.download(chromiumRevision)
+        // } else {
+        //     revisionInfo = browserFetcher.revisionInfo(chromiumRevision);
+        // }
+
+
 
         let headless:boolean|'new' = true;
         if (this.options.headless !== undefined) {
@@ -73,7 +78,7 @@ export class PdfService {
 
         const browser = await puppeteer.launch({
             headless: headless,
-            executablePath: revisionInfo.executablePath,
+            // executablePath: revisionInfo.executablePath,
             args: minimal_args
         });
 
