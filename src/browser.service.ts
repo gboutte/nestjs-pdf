@@ -149,7 +149,7 @@ export class BrowserService {
         if (this.useLockedBrowser) {
             buildId = this.getLockedBuildId(browser);
         }
-        if (buildId === null) {
+        if (buildId === null || buildId === undefined) {
             buildId = await puppeteerBrowser.resolveBuildId(browser, browserPlatform, versionTag);
         }
         const installedBrowserlist = await puppeteerBrowser.getInstalledBrowsers({
