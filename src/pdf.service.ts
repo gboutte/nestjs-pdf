@@ -14,7 +14,6 @@ export class PdfService {
     }
 
     async generatePdfFromHtml(html: string): Promise<Buffer> {
-        Logger.log('Stat generate PDF from HTML', 'NestJsPdf');
         if (this.options.chromiumRevision !== undefined) {
             Logger.warn('Using `chromiumRevision` is no longer supported since the puppeteer update.')
             // chromiumRevision = this.options.chromiumRevision;
@@ -62,7 +61,6 @@ export class PdfService {
             '--use-mock-keychain',
             "--disabled-setupid-sandbox"
         ];
-        Logger.log('Launch puppeteer', 'NestJsPdf');
         const browser = await puppeteer.launch({
             headless: headless,
             executablePath: await this.browserService.getExecutablePath(),

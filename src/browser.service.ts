@@ -99,13 +99,10 @@ export class BrowserService {
   }
 
   async getExecutablePath(): Promise<string> {
-    Logger.log('Getting executable path', 'NestJsPdf')
     const browser: Browser = this.getBrowser();
     const versionTag: BrowserTag = this.getBrowserTag()
     const browserPlatform = puppeteerBrowser.detectBrowserPlatform();
     const buildId = await puppeteerBrowser.resolveBuildId(browser, browserPlatform, versionTag);
-    Logger.log(`Browser ${browser} ${versionTag} build id: ${buildId}`, 'NestJsPdf')
-    Logger.log(`Cache dir: ${this.cacheDir}`, 'NestJsPdf')
     const installedBrowserlist = await puppeteerBrowser.getInstalledBrowsers({
       cacheDir: this.cacheDir
     });
@@ -114,10 +111,8 @@ export class BrowserService {
       return installedBrowser.browser === browser && installedBrowser.buildId === buildId
     });
     if (installedBrowser === undefined) {
-      Logger.error('Browser not installed', 'NestJsPdf')
       const newinstalledBrowser = await this.install();
       if(newinstalledBrowser === null){
-        Logger.error('Could not install browser', 'NestJsPdf')
         throw new Error('Could not install browser')
       }else{
         return newinstalledBrowser.executablePath;
