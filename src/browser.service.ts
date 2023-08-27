@@ -4,6 +4,7 @@ import {Inject, Injectable, Logger} from "@nestjs/common";
 import * as path from "path";
 import {PdfParameters} from "./pdf-parameters.interface";
 import {ConfigService} from "@nestjs/config";
+import * as fs from "fs";
 
 export enum BrowserTag {
     LATEST = 'latest',
@@ -20,15 +21,17 @@ export class BrowserService {
 
     private browser: Browser;
     private browserTag: BrowserTag;
+    private useLockedBrowser: boolean;
 
     constructor(private configService: ConfigService) {
         this.cacheDir = path.resolve(".cache/puppeteer-browser");
         this.options = this.configService.get<PdfParameters>('PDF_PARAMETERS');
         this.loadBrowser();
         this.loadBrowserTag();
+        this.loadUseLockedBrowser();
     }
 
-    async install() {
+    async install(lock: boolean = false) {
         const browser: Browser = this.browser;
         const versionTag: BrowserTag = this.browserTag;
 
@@ -40,6 +43,9 @@ export class BrowserService {
 
         if (await this.hasBrowserInstalled(browser, buildId)) {
             Logger.log('Browser already installed', 'NestJsPdf')
+            if (lock) {
+                this.writeLockFile(browser, buildId);
+            }
             return;
         } else {
             Logger.log('Starting browser installation', 'NestJsPdf')
@@ -60,6 +66,9 @@ export class BrowserService {
                 const installedBrowser = await puppeteerBrowser.install(installOption)
                 if (await this.hasBrowserInstalled(browser, buildId)) {
                     Logger.log('Browser installed successfully', 'NestJsPdf')
+                    if (lock) {
+                        this.writeLockFile(browser, buildId);
+                    }
                     return installedBrowser;
                 } else {
                     Logger.error('Browser installation failed', 'NestJsPdf')
@@ -80,9 +89,11 @@ export class BrowserService {
         }
         this.browser = browser;
     }
+
     public setBrowser(browser: Browser): void {
         this.browser = browser;
     }
+
     public getBrowser(): Browser {
         return this.browser;
     }
@@ -100,11 +111,23 @@ export class BrowserService {
         }
         this.browserTag = versionTag;
     }
+
     public setBrowserTag(browserTag: BrowserTag): void {
         this.browserTag = browserTag;
     }
+
     public getBrowserTag(): BrowserTag {
         return this.browserTag;
+    }
+
+    private loadUseLockedBrowser(): void {
+        let useLockedBrowser: boolean;
+        if (this.options === undefined || this.options.useLockedBrowser === undefined) {
+            useLockedBrowser = false;
+        } else {
+            useLockedBrowser = this.options.useLockedBrowser;
+        }
+        this.useLockedBrowser = useLockedBrowser;
     }
 
     async hasBrowserInstalled(browser, buildId) {
@@ -122,11 +145,16 @@ export class BrowserService {
         const browser: Browser = this.browser;
         const versionTag: BrowserTag = this.browserTag
         const browserPlatform = puppeteerBrowser.detectBrowserPlatform();
-        const buildId = await puppeteerBrowser.resolveBuildId(browser, browserPlatform, versionTag);
+        let buildId: string;
+        if (this.useLockedBrowser) {
+            buildId = this.getLockedBuildId(browser);
+        }
+        if (buildId === null) {
+            buildId = await puppeteerBrowser.resolveBuildId(browser, browserPlatform, versionTag);
+        }
         const installedBrowserlist = await puppeteerBrowser.getInstalledBrowsers({
             cacheDir: this.cacheDir
         });
-        console.log(installedBrowserlist)
         const installedBrowser = installedBrowserlist.find((installedBrowser) => {
             return installedBrowser.browser === browser && installedBrowser.buildId === buildId
         });
@@ -139,5 +167,26 @@ export class BrowserService {
             }
         }
         return installedBrowser.executablePath;
+    }
+
+    private writeLockFile(browser: Browser, buildId: string) {
+        const lockFile = path.resolve(this.cacheDir, `${browser}.lock`);
+        const data = JSON.stringify({
+            browser: browser,
+            buildId: buildId,
+            date: new Date().toISOString(),
+        });
+        fs.writeFileSync(lockFile, data);
+
+    }
+
+    getLockedBuildId(browser: Browser): string | null {
+        const lockFile = path.resolve(this.cacheDir, `${browser}.lock`);
+        if (fs.existsSync(lockFile)) {
+            const data = fs.readFileSync(lockFile);
+            const lock = JSON.parse(data.toString());
+            return lock.buildId;
+        }
+        return null;
     }
 }

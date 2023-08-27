@@ -10,4 +10,5 @@ export interface PdfParameters {
   headless?: boolean|'new';
   browser?: Browser;
   browserTag?:BrowserTag;
+  useLockedBrowser?: boolean;
 }

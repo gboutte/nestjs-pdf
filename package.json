@@ -47,6 +47,6 @@
     "puppeteer": "^21.1.0"
   },
   "bin": {
-    "nestjs-pdf": "src/main.ts"
+    "nestjs-pdf": "dist/main.js"
   }
 }

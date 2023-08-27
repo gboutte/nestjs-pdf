@@ -1,15 +1,21 @@
-import { Command, CommandRunner, Option } from 'nest-commander';
+import {Command, CommandRunner, Option} from 'nest-commander';
 import {Logger} from "@nestjs/common";
 import {BrowserService, BrowserTag} from "./browser.service";
 import {Browser} from "@puppeteer/browsers";
+
 interface InstallCommandOptions {
     browser: Browser;
-    tag:BrowserTag;
+    tag: BrowserTag;
+
+    lock: boolean;
 }
 
-@Command({ name: 'install', description: 'Install everything needed for the pdf generation' })
+@Command({
+    name: 'install', description: 'Install everything needed for the pdf generation',
+})
+
 export class PdfCommand extends CommandRunner {
-    constructor(private browserService:BrowserService) {
+    constructor(private browserService: BrowserService) {
         super()
     }
 
@@ -18,18 +24,23 @@ export class PdfCommand extends CommandRunner {
         options?: InstallCommandOptions,
     ): Promise<void> {
         Logger.log('Start installation command', 'NestJsPdf')
-        if (options?.browser === undefined ) {
+        if (options?.browser === undefined) {
             Logger.error('No browser specified', 'NestJsPdf')
-            return ;
+            return;
         }
-        if (options?.tag === undefined ) {
+        if (options?.tag === undefined) {
             Logger.error('No browser tag specified', 'NestJsPdf')
-            return ;
+            return;
         }
+        let lock = false;
+        if (options?.lock !== undefined) {
+            lock = options.lock;
+        }
+
         this.browserService.setBrowser(options.browser)
         this.browserService.setBrowserTag(options.tag)
 
-        await this.browserService.install()
+        await this.browserService.install(lock)
     }
 
     @Option({
@@ -39,12 +50,20 @@ export class PdfCommand extends CommandRunner {
     parseBrowser(val: string): Browser {
         return val as Browser;
     }
+
     @Option({
         flags: '-t, --tag [tag]',
         description: 'The browser version to use for the pdf generation',
     })
     parseBrowserTag(val: string): BrowserTag {
         return val as BrowserTag;
+    }
+
+    @Option({
+        flags: '-l, --lock [lock]',
+    })
+    parseLock(val: string): boolean {
+        return val === 'true';
     }
 
 }
