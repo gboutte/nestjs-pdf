@@ -30,7 +30,7 @@
   "devDependencies": {
     "@gboutte/nestjs-hbs": "^0.0",
     "@nestjs/common": "^9.0.0 || ^10.0.0",
-    "@nestjs/config": "^3.0.0",
+    "@nestjs/config": "^2.0.0 || ^3.0.0",
     "@puppeteer/browsers": "^1.7.0",
     "@types/node": "^18.0.0 || ^19.0.0 || ^20.0.0",
     "nest-commander": "^3.11.1",
@@ -46,7 +46,7 @@
     "@puppeteer/browsers": "^1.7.0",
     "puppeteer": "^21.1.0",
     "nest-commander": "^3.11.1",
-    "@nestjs/config": "^3.0.0"
+    "@nestjs/config": "^2.0.0 || ^3.0.0"
   },
   "bin": {
     "nestjs-pdf": "dist/main.js"
