@@ -1,6 +1,6 @@
 {
   "name": "@gboutte/nestjs-pdf",
-  "version": "0.2.6-beta.3",
+  "version": "0.2.6-beta.4",
   "description": "This package provide a service to render PDF from html string or from handlebars templates for nestjs.",
   "keywords": [
     "nestjs",
