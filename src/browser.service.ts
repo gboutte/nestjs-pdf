@@ -178,6 +178,8 @@ export class BrowserService {
         });
         fs.writeFileSync(lockFile, data);
 
+        Logger.log(`Browser ${browser} locked to build ${buildId}`, 'NestJsPdf')
+
     }
 
     getLockedBuildId(browser: Browser): string | null {
