@@ -55,10 +55,10 @@ export class BrowserService {
                 cacheDir: this.cacheDir,
                 browser: browser,
                 buildId: buildId,
-                downloadProgressCallback: (downloadedBytes, totalBytes) => {
-                    const progress = ((downloadedBytes / totalBytes) * 100).toFixed(2);
-                    Logger.log(`Downloaded ${progress}%`, 'NestJsPdf');
-                }
+                // downloadProgressCallback: (downloadedBytes, totalBytes) => {
+                //     const progress = ((downloadedBytes / totalBytes) * 100).toFixed(2);
+                //     Logger.log(`Downloaded ${progress}%`, 'NestJsPdf');
+                // }
             };
 
             if (puppeteerBrowser.canDownload(installOption)) {
