@@ -6,38 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
-
-## 0.2.6-beta.12 - 2023-09-13
-
-## 0.2.6-beta.11 - 2023-09-13
-
-## 0.2.6-beta.10 - 2023-09-13
-
-## 0.2.6-beta.9 - 2023-09-13
-
-## 0.2.6-beta.8 - 2023-09-02
-
-## 0.2.6-beta.7 - 2023-08-27
-
-## 0.2.6-beta.6 - 2023-08-27
-
-## 0.2.6-beta.5 - 2023-08-27
-
-## 0.2.6-beta.4 - 2023-08-27
-
-## 0.2.6-beta.3 - 2023-08-27
-
-## 0.2.6-beta.2 - 2023-08-27
-
-## 0.2.6-beta.1 - 2023-08-27
-
-## 0.2.6-beta.0 - 2023-08-26
-
-## 0.2.5-beta.0 - 2023-08-26
-
-## 0.2.4-beta.0 - 2023-08-26
-
-## 0.2.3 - 2023-08-25
+### Fixed
+- Github workflow
+- Version lock
+### Added
+- Nestjs command
+ 
 
 ## 0.2.1 - 2023-08-25
 ### Changed
