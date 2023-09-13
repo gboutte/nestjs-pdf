@@ -14,7 +14,6 @@ export class PdfService {
     }
 
     async generatePdfFromHtml(html: string): Promise<Buffer> {
-
         if (this.options.chromiumRevision !== undefined) {
             Logger.warn('Using `chromiumRevision` is no longer supported since the puppeteer update.')
             // chromiumRevision = this.options.chromiumRevision;
@@ -62,7 +61,6 @@ export class PdfService {
             '--use-mock-keychain',
             "--disabled-setupid-sandbox"
         ];
-
         const browser = await puppeteer.launch({
             headless: headless,
             executablePath: await this.browserService.getExecutablePath(),

@@ -3,6 +3,8 @@ import {Browser} from "@puppeteer/browsers";
 import {Inject, Injectable, Logger} from "@nestjs/common";
 import * as path from "path";
 import {PdfParameters} from "./pdf-parameters.interface";
+import {ConfigService} from "@nestjs/config";
+import * as fs from "fs";
 
 export enum BrowserTag {
     LATEST = 'latest',
@@ -15,14 +17,23 @@ export enum BrowserTag {
 @Injectable()
 export class BrowserService {
     private cacheDir: string;
+    private options?: PdfParameters;
 
-    constructor(@Inject("PDF_PARAMETERS") private options: PdfParameters) {
+    private browser: Browser;
+    private browserTag: BrowserTag;
+    private useLockedBrowser: boolean;
+
+    constructor(@Inject('PDF_PARAMETERS') pdfParams: PdfParameters) {
         this.cacheDir = path.resolve(".cache/puppeteer-browser");
+        this.options = pdfParams;
+        this.loadBrowser();
+        this.loadBrowserTag();
+        this.loadUseLockedBrowser();
     }
 
-    async install() {
-        const browser: Browser = this.getBrowser();
-        const versionTag: BrowserTag = this.getBrowserTag()
+    async install(lock: boolean = false) {
+        const browser: Browser = this.browser;
+        const versionTag: BrowserTag = this.browserTag;
 
         const browserPlatform = puppeteerBrowser.detectBrowserPlatform();
 
@@ -32,6 +43,9 @@ export class BrowserService {
 
         if (await this.hasBrowserInstalled(browser, buildId)) {
             Logger.log('Browser already installed', 'NestJsPdf')
+            if (lock) {
+                this.writeLockFile(browser, buildId);
+            }
             return;
         } else {
             Logger.log('Starting browser installation', 'NestJsPdf')
@@ -41,10 +55,10 @@ export class BrowserService {
                 cacheDir: this.cacheDir,
                 browser: browser,
                 buildId: buildId,
-                downloadProgressCallback: (downloadedBytes, totalBytes) => {
-                    const progress = ((downloadedBytes / totalBytes) * 100).toFixed(2);
-                    Logger.log(`Downloaded ${progress}%`, 'NestJsPdf');
-                }
+                // downloadProgressCallback: (downloadedBytes, totalBytes) => {
+                //     const progress = ((downloadedBytes / totalBytes) * 100).toFixed(2);
+                //     Logger.log(`Downloaded ${progress}%`, 'NestJsPdf');
+                // }
             };
 
             if (puppeteerBrowser.canDownload(installOption)) {
@@ -52,6 +66,10 @@ export class BrowserService {
                 const installedBrowser = await puppeteerBrowser.install(installOption)
                 if (await this.hasBrowserInstalled(browser, buildId)) {
                     Logger.log('Browser installed successfully', 'NestJsPdf')
+                    if (lock) {
+                        this.writeLockFile(browser, buildId);
+                    }
+                    return installedBrowser;
                 } else {
                     Logger.error('Browser installation failed', 'NestJsPdf')
                 }
@@ -59,23 +77,31 @@ export class BrowserService {
                 Logger.error(`Error, can't install ${installOption.browser} ${installOption.buildId}`, 'NestJsPdf')
             }
         }
-
+        return null;
     }
 
-    private getBrowser(): Browser {
+    private loadBrowser(): void {
         let browser: Browser;
-        if (this.options.browser === undefined) {
+        if (this.options === undefined || this.options.browser === undefined) {
             browser = Browser.CHROMIUM;
         } else {
             browser = this.options.browser;
         }
-        return browser;
+        this.browser = browser;
     }
 
-    private getBrowserTag(): BrowserTag {
+    public setBrowser(browser: Browser): void {
+        this.browser = browser;
+    }
+
+    public getBrowser(): Browser {
+        return this.browser;
+    }
+
+    private loadBrowserTag(): void {
         let versionTag: BrowserTag;
-        if (this.options.browserTag === undefined) {
-            if (this.getBrowser() === Browser.CHROMIUM) {
+        if (this.options === undefined || this.options.browserTag === undefined) {
+            if (this.browser === Browser.CHROMIUM) {
                 versionTag = BrowserTag.LATEST;
             } else {
                 versionTag = BrowserTag.STABLE;
@@ -83,7 +109,25 @@ export class BrowserService {
         } else {
             versionTag = this.options.browserTag;
         }
-        return versionTag;
+        this.browserTag = versionTag;
+    }
+
+    public setBrowserTag(browserTag: BrowserTag): void {
+        this.browserTag = browserTag;
+    }
+
+    public getBrowserTag(): BrowserTag {
+        return this.browserTag;
+    }
+
+    private loadUseLockedBrowser(): void {
+        let useLockedBrowser: boolean;
+        if (this.options === undefined || this.options.useLockedBrowser === undefined) {
+            useLockedBrowser = false;
+        } else {
+            useLockedBrowser = this.options.useLockedBrowser;
+        }
+        this.useLockedBrowser = useLockedBrowser;
     }
 
     async hasBrowserInstalled(browser, buildId) {
@@ -98,16 +142,54 @@ export class BrowserService {
     }
 
     async getExecutablePath(): Promise<string> {
-        const browser: Browser = this.getBrowser();
-        const versionTag: BrowserTag = this.getBrowserTag()
+        const browser: Browser = this.browser;
+        const versionTag: BrowserTag = this.browserTag
         const browserPlatform = puppeteerBrowser.detectBrowserPlatform();
-        const buildId = await puppeteerBrowser.resolveBuildId(browser, browserPlatform, versionTag);
+        let buildId: string;
+        if (this.useLockedBrowser) {
+            buildId = this.getLockedBuildId(browser);
+            Logger.log(`Using locked browser ${buildId}`, 'NestJsPdf')
+        }
+        if (buildId === null || buildId === undefined) {
+            buildId = await puppeteerBrowser.resolveBuildId(browser, browserPlatform, versionTag);
+        }
         const installedBrowserlist = await puppeteerBrowser.getInstalledBrowsers({
             cacheDir: this.cacheDir
         });
         const installedBrowser = installedBrowserlist.find((installedBrowser) => {
             return installedBrowser.browser === browser && installedBrowser.buildId === buildId
         });
+        if (installedBrowser === undefined) {
+            const newinstalledBrowser = await this.install();
+            if (newinstalledBrowser === null) {
+                throw new Error('Could not install browser')
+            } else {
+                return newinstalledBrowser.executablePath;
+            }
+        }
         return installedBrowser.executablePath;
+    }
+
+    private writeLockFile(browser: Browser, buildId: string) {
+        const lockFile = path.resolve(this.cacheDir, `${browser}.lock`);
+        const data = JSON.stringify({
+            browser: browser,
+            buildId: buildId,
+            date: new Date().toISOString(),
+        });
+        fs.writeFileSync(lockFile, data);
+
+        Logger.log(`Browser ${browser} locked to build ${buildId}`, 'NestJsPdf')
+
+    }
+
+    getLockedBuildId(browser: Browser): string | null {
+        const lockFile = path.resolve(this.cacheDir, `${browser}.lock`);
+        if (fs.existsSync(lockFile)) {
+            const data = fs.readFileSync(lockFile);
+            const lock = JSON.parse(data.toString());
+            return lock.buildId;
+        }
+        return null;
     }
 }
