@@ -8,6 +8,10 @@ import {ConfigModule} from "@nestjs/config";
     providers: [
         BrowserService,
         PdfCommand,
+        {
+            provide: "PDF_PARAMETERS",
+            useValue: undefined,
+        },
     ]
 })
 export class PdfCliModule {}
