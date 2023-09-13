@@ -146,6 +146,7 @@ export class BrowserService {
         const versionTag: BrowserTag = this.browserTag
         const browserPlatform = puppeteerBrowser.detectBrowserPlatform();
         let buildId: string;
+        console.log(this.useLockedBrowser)
         if (this.useLockedBrowser) {
             buildId = this.getLockedBuildId(browser);
             Logger.log(`Using locked browser ${buildId}`, 'NestJsPdf')
