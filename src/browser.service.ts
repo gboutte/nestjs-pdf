@@ -122,6 +122,7 @@ export class BrowserService {
 
     private loadUseLockedBrowser(): void {
         let useLockedBrowser: boolean;
+        console.log(this.options)
         if (this.options === undefined || this.options.useLockedBrowser === undefined) {
             useLockedBrowser = false;
         } else {
