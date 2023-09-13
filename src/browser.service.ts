@@ -23,9 +23,9 @@ export class BrowserService {
     private browserTag: BrowserTag;
     private useLockedBrowser: boolean;
 
-    constructor(private configService: ConfigService) {
+    constructor(@Inject('PDF_PARAMETERS') pdfParams: PdfParameters) {
         this.cacheDir = path.resolve(".cache/puppeteer-browser");
-        this.options = this.configService.get<PdfParameters>('PDF_PARAMETERS');
+        this.options = pdfParams;
         this.loadBrowser();
         this.loadBrowserTag();
         this.loadUseLockedBrowser();
@@ -122,6 +122,7 @@ export class BrowserService {
 
     private loadUseLockedBrowser(): void {
         let useLockedBrowser: boolean;
+        console.log("options")
         console.log(this.options)
         if (this.options === undefined || this.options.useLockedBrowser === undefined) {
             useLockedBrowser = false;
