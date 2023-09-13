@@ -148,6 +148,7 @@ export class BrowserService {
         let buildId: string;
         if (this.useLockedBrowser) {
             buildId = this.getLockedBuildId(browser);
+            Logger.log(`Using locked browser ${buildId}`, 'NestJsPdf')
         }
         if (buildId === null || buildId === undefined) {
             buildId = await puppeteerBrowser.resolveBuildId(browser, browserPlatform, versionTag);
