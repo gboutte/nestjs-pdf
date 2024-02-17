@@ -1,5 +1,5 @@
 import {HandlebarsModule} from "@gboutte/nestjs-hbs";
-import {DynamicModule, Global, Module} from "@nestjs/common";
+import {DynamicModule, Global, Inject, Logger, Module} from "@nestjs/common";
 import {PdfParameters} from "./pdf-parameters.interface";
 import {PdfService} from "./pdf.service";
 import {BrowserService} from "./browser.service";
@@ -16,8 +16,8 @@ import {ConfigModule} from "@nestjs/config";
     exports: [PdfService],
 })
 export class PdfModule {
-    constructor(private browserService: BrowserService) {
-        browserService.install();
+    constructor(private browserService: BrowserService,@Inject('PDF_PARAMETERS') pdfParams: PdfParameters) {
+        browserService.install(pdfParams.useLockedBrowser !== undefined ? pdfParams.useLockedBrowser : false);
     }
 
     static forRoot(pdfParameters: PdfParameters): DynamicModule {

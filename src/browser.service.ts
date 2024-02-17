@@ -1,5 +1,5 @@
 import * as puppeteerBrowser from "@puppeteer/browsers";
-import {Browser} from "@puppeteer/browsers";
+import {Browser, BrowserPlatform} from "@puppeteer/browsers";
 import {Inject, Injectable, Logger} from "@nestjs/common";
 import * as path from "path";
 import {PdfParameters} from "./pdf-parameters.interface";
@@ -55,10 +55,7 @@ export class BrowserService {
                 cacheDir: this.cacheDir,
                 browser: browser,
                 buildId: buildId,
-                // downloadProgressCallback: (downloadedBytes, totalBytes) => {
-                //     const progress = ((downloadedBytes / totalBytes) * 100).toFixed(2);
-                //     Logger.log(`Downloaded ${progress}%`, 'NestJsPdf');
-                // }
+                baseUrl: (this.options !== undefined && this.options.browserInstallBaseUrl !== undefined) ? this.options.browserInstallBaseUrl : undefined,
             };
 
             if (puppeteerBrowser.canDownload(installOption)) {

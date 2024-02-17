@@ -11,4 +11,5 @@ export interface PdfParameters {
   browser?: Browser;
   browserTag?:BrowserTag;
   useLockedBrowser?: boolean;
+  browserInstallBaseUrl?: string;
 }
