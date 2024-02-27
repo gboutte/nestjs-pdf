@@ -12,5 +12,5 @@ export interface PdfParameters {
   browserTag?: BrowserTag;
   useLockedBrowser?: boolean;
   browserInstallBaseUrl?: string;
-  extraPuppeteerArgs: string[];
+  extraPuppeteerArgs?: string[];
 }
