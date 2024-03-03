@@ -23,7 +23,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rimraf dist && tsc",
-    "prepublish": "npm run build"
+    "prepublish": "npm run build",
+    "format": "prettier --write \"**/*.{js,ts,d.ts}\"",
+    "format:check": "prettier --check \"**/*.{js,ts,d.ts}\""
   },
   "author": "Grégory Boutte <gboutte@protonmail.com>",
   "license": "MIT",
