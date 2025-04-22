@@ -36,11 +36,16 @@ export class BrowserService {
 
     const browserPlatform = puppeteerBrowser.detectBrowserPlatform();
 
-    const buildId = await puppeteerBrowser.resolveBuildId(
-      browser,
-      browserPlatform,
-      versionTag,
-    );
+    let buildId: string;
+    if (this.options.buildId !== undefined) {
+      buildId = this.options.buildId;
+    } else {
+      buildId = await puppeteerBrowser.resolveBuildId(
+        browser,
+        browserPlatform,
+        versionTag,
+      );
+    }
 
     Logger.log(
       `Browser ${browser} ${versionTag} build id: ${buildId}`,

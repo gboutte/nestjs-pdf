@@ -7,6 +7,7 @@ export interface PdfParameters {
   pdfOptions?: PDFOptions;
   hbsOptions?: HandlebarsOptions;
   chromiumRevision?: string;
+  buildId?: string;
   headless?: boolean | 'new';
   browser?: Browser;
   browserTag?: BrowserTag;

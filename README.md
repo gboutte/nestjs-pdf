@@ -28,7 +28,8 @@ export class AppModule {}
 | `browserInstallBaseUrl` | The baseUrl used for the installation of the browser. This baseUrl is passed to the [`install`](https://pptr.dev/browsers-api/browsers.install) method of `@puppeteer/browsers`                                                                                                                |
 | `headless`         | Define if you want to use chromium headless or not, or the new version. By default it's `true`. Allowed values: `true`,`false`,`"new"`                                                                                                                                                         |
 | `useLockedBrowser`         | Define if you want to use the locked version of the browser. By default it's `false`. Allowed values: `true`,`false`                                                                                                                                                                           |
-| `extraPuppeteerArgs`         | It passes some extra arguments to Puppeteer's launch method. You can check the default args at bellow. Should be `string[]`                                                                                                                                                                          |
+| `extraPuppeteerArgs`         | It passes some extra arguments to Puppeteer's launch method. You can check the default args at bellow. Should be `string[]`                                                                                                                                                                    |
+| `buildId`         | You can force the build id. Should be `string`                                                                                                                                                                                                                                                 |
 
 
 ## Default Puppeteer arguments
