@@ -26,7 +26,7 @@ export class BrowserService {
   constructor(@Inject('PDF_PARAMETERS') pdfParams: PdfParameters) {
     this.cacheDir = path.resolve('.cache/puppeteer-browser');
     this.options = pdfParams;
-    this.loadBuildId()
+    this.loadBuildId();
     this.loadBrowser();
     this.loadBrowserTag();
     this.loadUseLockedBrowser();
@@ -148,7 +148,6 @@ export class BrowserService {
   public getBrowserTag(): BrowserTag {
     return this.browserTag;
   }
-
 
   getBuildId(): string | undefined {
     return this.buildId;
