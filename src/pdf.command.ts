@@ -6,7 +6,7 @@ import { BrowserService, BrowserTag } from './browser.service';
 interface InstallCommandOptions {
   browser: Browser;
   tag: BrowserTag;
-
+  buildId?: string;
   lock: boolean;
 }
 
@@ -37,6 +37,10 @@ export class PdfCommand extends CommandRunner {
       lock = options.lock;
     }
 
+    if (options?.buildId !== undefined) {
+      this.browserService.setBuildId(options.buildId);
+    }
+
     this.browserService.setBrowser(options.browser);
     this.browserService.setBrowserTag(options.tag);
 
@@ -64,5 +68,12 @@ export class PdfCommand extends CommandRunner {
   })
   parseLock(val: string): boolean {
     return val === 'true';
+  }
+
+  @Option({
+    flags: '-i, --id [buildId]',
+  })
+  parseBuildId(buildId: string): string {
+    return buildId;
   }
 }
