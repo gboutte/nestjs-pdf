@@ -21,10 +21,12 @@ export class BrowserService {
   private browser: Browser;
   private browserTag: BrowserTag;
   private useLockedBrowser: boolean;
+  private buildId: string | undefined;
 
   constructor(@Inject('PDF_PARAMETERS') pdfParams: PdfParameters) {
     this.cacheDir = path.resolve('.cache/puppeteer-browser');
     this.options = pdfParams;
+    this.loadBuildId();
     this.loadBrowser();
     this.loadBrowserTag();
     this.loadUseLockedBrowser();
@@ -37,8 +39,8 @@ export class BrowserService {
     const browserPlatform = puppeteerBrowser.detectBrowserPlatform();
 
     let buildId: string;
-    if (this.options.buildId !== undefined) {
-      buildId = this.options.buildId;
+    if (this.buildId !== undefined) {
+      buildId = this.buildId;
     } else {
       buildId = await puppeteerBrowser.resolveBuildId(
         browser,
@@ -129,12 +131,30 @@ export class BrowserService {
     this.browserTag = versionTag;
   }
 
+  private loadBuildId(): void {
+    let buildId: string | undefined;
+    if (this.options === undefined || this.options.buildId === undefined) {
+      buildId = undefined;
+    } else {
+      buildId = this.options.buildId;
+    }
+    this.buildId = buildId;
+  }
+
   public setBrowserTag(browserTag: BrowserTag): void {
     this.browserTag = browserTag;
   }
 
   public getBrowserTag(): BrowserTag {
     return this.browserTag;
+  }
+
+  getBuildId(): string | undefined {
+    return this.buildId;
+  }
+
+  setBuildId(value: string | undefined) {
+    this.buildId = value;
   }
 
   private loadUseLockedBrowser(): void {
