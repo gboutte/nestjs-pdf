@@ -9,9 +9,10 @@ npm install @gboutte/nestjs-pdf
 ```ts
 @Module({
   imports: [
-    HandlebarsModule.forRoot({
-      pdfOptions: {},
-      hbsOptions: {}
+    PdfModule.forRoot({
+        pdfOptions: {},
+        hbsOptions: {},
+      }
     )
   ],
   controllers: [],
@@ -103,7 +104,7 @@ export class AppController {
       { product },
     );
 
-    return pdf;
+    return new StreamableFile(pdf)
   }
 }
 ```
@@ -132,7 +133,3 @@ PdfModule.forRoot({
     'https://storage.googleapis.com/chrome-for-testing-public',
 }),
 ```
-
-# Known issues
-
-- Currently, the pdf only works with fastify adapter
