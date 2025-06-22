@@ -8,7 +8,7 @@ export interface PdfParameters {
   hbsOptions?: HandlebarsOptions;
   chromiumRevision?: string;
   buildId?: string;
-  headless?: boolean | 'new';
+  headless?: boolean | 'shell';
   browser?: Browser;
   browserTag?: BrowserTag;
   useLockedBrowser?: boolean;

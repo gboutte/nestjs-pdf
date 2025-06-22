@@ -36,7 +36,9 @@ export class BrowserService {
     const browser: Browser = this.browser;
     const versionTag: BrowserTag = this.browserTag;
 
-    const browserPlatform = puppeteerBrowser.detectBrowserPlatform();
+    const browserPlatform =
+      puppeteerBrowser.detectBrowserPlatform() ??
+      puppeteerBrowser.BrowserPlatform.LINUX;
 
     let buildId: string;
     if (this.buildId !== undefined) {
@@ -74,7 +76,7 @@ export class BrowserService {
             : undefined,
       };
 
-      if (puppeteerBrowser.canDownload(installOption)) {
+      if (await puppeteerBrowser.canDownload(installOption)) {
         Logger.log(
           `Installing ${installOption.browser} ${installOption.buildId}`,
           'NestJsPdf',
@@ -187,8 +189,10 @@ export class BrowserService {
   async getExecutablePath(): Promise<string> {
     const browser: Browser = this.browser;
     const versionTag: BrowserTag = this.browserTag;
-    const browserPlatform = puppeteerBrowser.detectBrowserPlatform();
-    let buildId: string;
+    const browserPlatform =
+      puppeteerBrowser.detectBrowserPlatform() ??
+      puppeteerBrowser.BrowserPlatform.LINUX;
+    let buildId: string | null = null;
     if (this.useLockedBrowser) {
       buildId = this.getLockedBuildId(browser);
       Logger.log(`Using locked browser ${buildId}`, 'NestJsPdf');
@@ -211,7 +215,7 @@ export class BrowserService {
     });
     if (installedBrowser === undefined) {
       const newinstalledBrowser = await this.install();
-      if (newinstalledBrowser === null) {
+      if (newinstalledBrowser === null || newinstalledBrowser === undefined) {
         throw new Error('Could not install browser');
       } else {
         return newinstalledBrowser.executablePath;

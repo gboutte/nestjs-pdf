@@ -12,7 +12,7 @@ export class PdfService {
     @Inject('PDF_PARAMETERS') private options: PdfParameters,
   ) {}
 
-  async generatePdfFromHtml(html: string): Promise<Buffer> {
+  async generatePdfFromHtml(html: string): Promise<Uint8Array> {
     if (this.options.chromiumRevision !== undefined) {
       Logger.warn(
         'Using `chromiumRevision` is no longer supported since the puppeteer update.',
@@ -20,7 +20,7 @@ export class PdfService {
       // chromiumRevision = this.options.chromiumRevision;
     }
 
-    let headless: boolean | 'new' = true;
+    let headless: boolean | 'shell' = true;
     if (this.options.headless !== undefined) {
       headless = this.options.headless;
     }
